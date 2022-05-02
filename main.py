@@ -20,7 +20,7 @@ class GUI(tk.Tk):
         screen_height = self.winfo_screenheight()
         x_coord = int((screen_width / 2) - (window_width / 2))
         y_coord = int((screen_height / 2) - (window_height / 2) - 40)
-        self.geometry(f"{window_width}x{window_height}+{x_coord}+{y_coord}")
+        geo = f"{window_width}x{window_height}+{x_coord}+{y_coord}"
 
         self.r_var = None
         self.input_field = None
@@ -29,6 +29,11 @@ class GUI(tk.Tk):
         self.weapon_tree = None
 
         self.widgets()
+
+        self.attributes('-topmost', True)
+        self.geometry(geo)
+        self.update()
+        self.attributes('-topmost', False)
 
     def widgets(self):
         pad = {'padx': 10, 'pady': 10}
