@@ -20,10 +20,9 @@ class GUI(tk.Tk):
         screen_height = self.winfo_screenheight()
         x_coord = int((screen_width / 2) - (window_width / 2))
         y_coord = int((screen_height / 2) - (window_height / 2) - 40)
-        geo = f"{window_width}x{window_height}+{x_coord}+{y_coord}"
 
-        self.r_var = None
-        self.input_field = None
+        self.radio = None
+        self.field = None
         self.results = None
         self.ammo_tree = None
         self.weapon_tree = None
@@ -31,7 +30,7 @@ class GUI(tk.Tk):
         self.widgets()
 
         self.attributes('-topmost', True)
-        self.geometry(geo)
+        self.geometry(f"{window_width}x{window_height}+{x_coord}+{y_coord}")
         self.update()
         self.attributes('-topmost', False)
 
@@ -44,23 +43,18 @@ class GUI(tk.Tk):
     def search_frame(self, pad):
         search_frame = ttk.Frame(self)
         search_frame.grid(column=0, row=0, **pad)
+        ttk.Label(search_frame, text='Search by name: ').grid(column=0, row=0)
 
-        search_by = ttk.Label(search_frame, text='Search by name: ')
-        search_by.grid(column=0, row=0)
+        self.radio = tk.IntVar()
+        self.radio.set(0)
+        ttk.Radiobutton(search_frame, text='Ammo', variable=self.radio, value=0).grid(column=1, row=0)
+        ttk.Radiobutton(search_frame, text='Weapon', variable=self.radio, value=1).grid(column=2, row=0)
 
-        self.r_var = tk.IntVar()
-        self.r_var.set(0)
-        ammo_radio = ttk.Radiobutton(search_frame, text='Ammo', variable=self.r_var, value=0)
-        ammo_radio.grid(column=1, row=0)
-        weapon_radio = ttk.Radiobutton(search_frame, text='Weapon', variable=self.r_var, value=1)
-        weapon_radio.grid(column=2, row=0)
+        self.field = ttk.Entry(search_frame)
+        self.field.grid(column=0, row=1, columnspan=2, ipadx=15, pady=10)
+        self.field.bind('<Return>', self.submit_keypress)
 
-        self.input_field = ttk.Entry(search_frame)
-        self.input_field.grid(column=0, row=1, columnspan=2, ipadx=15, pady=10)
-        self.input_field.bind('<Return>', self.submit_keypress)
-
-        submit = ttk.Button(search_frame, text='Submit', command=self.submit_click)
-        submit.grid(column=2, row=1)
+        ttk.Button(search_frame, text='Submit', command=self.submit_click).grid(column=2, row=1)
 
         self.results = ttk.Label(search_frame, text='')
         self.results.grid(column=0, row=2, columnspan=3)
@@ -209,20 +203,23 @@ class GUI(tk.Tk):
         self.ammo_tree.delete(*self.ammo_tree.get_children())
         self.weapon_tree.delete(*self.weapon_tree.get_children())
 
-        if self.input_field.get() == "" or self.input_field.get() == " ":
+        if self.field.get() == "" or self.field.get() == " ":
             self.result()
 
-        elif self.r_var.get() == 0:
+        elif self.radio.get() == 0:
             self.c.execute(f"SELECT * FROM Ammo WHERE name LIKE '%{query}%'")
+
             a_data = self.c.fetchall()
             for col in a_data:
                 self.ammo_tree.insert(parent='', index='end', text='',
                                       values=(col[1], col[2], col[3], col[4], col[5]))
+
             self.c.execute("SELECT DISTINCT w.caliber, w.name, w.type, w.recoil, w.ergo, w.rpm "
                            "FROM Weapons AS w "
                            "JOIN Ammo AS a "
                            "ON a.caliber = w.caliber "
                            f"WHERE a.name LIKE '%{query}%'")
+
             w_data = self.c.fetchall()
             for col in w_data:
                 self.weapon_tree.insert(parent='', index='end', text='',
@@ -256,8 +253,8 @@ class GUI(tk.Tk):
             self.ammo_tree.insert(parent='', index='end', text='',
                                   values=(col[1], col[2], col[3], col[4], col[5]))
         self.c.execute(f"SELECT * FROM Weapons WHERE caliber = '{query}'")
-        w_data = self.c.fetchall()
 
+        w_data = self.c.fetchall()
         for col in w_data:
             self.weapon_tree.insert(parent='', index='end', text='',
                                     values=(col[3], col[1], col[2], col[4], col[5], col[6]))
@@ -265,13 +262,13 @@ class GUI(tk.Tk):
         self.result()
 
     def submit_click(self):
-        self.submit_sql_query(self.input_field.get())
-        self.input_field.delete(0, 'end')
+        self.submit_sql_query(self.field.get())
+        self.field.delete(0, 'end')
 
     # noinspection PyUnusedLocal
     def submit_keypress(self, event):
-        self.submit_sql_query(self.input_field.get())
-        self.input_field.delete(0, 'end')
+        self.submit_sql_query(self.field.get())
+        self.field.delete(0, 'end')
 
     def separator_resize_blocker(self, event):
         if self.ammo_tree.identify_region(event.x, event.y) == "separator" or \
