@@ -62,76 +62,43 @@ class GUI(tk.Tk):
     def button_frame(self, pad):
         btn_frame = ttk.Frame(self)
         btn_frame.grid(column=0, row=1, padx=10)
+        ttk.Label(btn_frame, text='Search by cartridge:').grid(column=0, row=0, columnspan=2)
 
-        cartridges = ttk.Label(btn_frame, text='Search by cartridge:')
-        cartridges.grid(column=0, row=0, columnspan=2)
+        rifle_frame = ttk.Frame(btn_frame)
+        rifle_frame.grid(column=0, row=1, rowspan=2, sticky='nw', **pad)
+        ttk.Label(rifle_frame, text='Rifle').grid(sticky='w')
+        rifle_cartridges = ['9x39mm', '.366 TKM', '5.45x39mm', '5.56x45mm NATO', '.300 Blackout', '7.62x39mm',
+                            '7.62x51mm NATO', '7.62x54mmR', '.338 Lapua Magnum', '12.7x55mm STs-130']
+        for cartridge in rifle_cartridges:
+            ttk.Button(rifle_frame, text=cartridge, command=partial(self.ammo_click, cartridge)).grid(sticky='w')
 
-        r_f = ttk.Frame(btn_frame)
-        r_f.grid(column=0, row=1, rowspan=11, sticky='nw', **pad)
-        r_cartridges = ttk.Label(r_f, text='Rifle')
-        r_cartridges.grid(sticky='w')
-        btn_9x39mm = ttk.Button(r_f, text='9x39mm', command=partial(self.ammo_click, '9x39mm'))
-        btn_9x39mm.grid(sticky='w')
-        btn_366_tkm = ttk.Button(r_f, text='.366 TKM', command=partial(self.ammo_click, '.366 TKM'))
-        btn_366_tkm.grid(sticky='w')
-        btn_545x39mm = ttk.Button(r_f, text='5.45x39mm', command=partial(self.ammo_click, '5.45x39mm'))
-        btn_545x39mm.grid(sticky='w')
-        btn_556x45mm_nato = ttk.Button(r_f, text='5.56x45mm NATO', command=partial(self.ammo_click, '5.56x45mm NATO'))
-        btn_556x45mm_nato.grid(sticky='w')
-        btn_300_blackout = ttk.Button(r_f, text='.300 Blackout', command=partial(self.ammo_click, '.300 Blackout'))
-        btn_300_blackout.grid(sticky='w')
-        btn_762x39mm = ttk.Button(r_f, text='7.62x39mm', command=partial(self.ammo_click, '7.62x39mm'))
-        btn_762x39mm.grid(sticky='w')
-        btn_762x51mm_nato = ttk.Button(r_f, text='7.62x51mm NATO', command=partial(self.ammo_click, '7.62x51mm NATO'))
-        btn_762x51mm_nato.grid(sticky='w')
-        btn_762x54mmr = ttk.Button(r_f, text='7.62x54mmR', command=partial(self.ammo_click, '7.62x54mmR'))
-        btn_762x54mmr.grid(sticky='w')
-        btn_338 = ttk.Button(r_f, text='.338 Lapua Magnum', command=partial(self.ammo_click, '.338 Lapua Magnum'))
-        btn_338.grid(sticky='w')
-        btn_127x55mm = ttk.Button(r_f, text='12.7x55mm STs-130', command=partial(self.ammo_click, '12.7x55mm STs-130'))
-        btn_127x55mm.grid(sticky='w')
+        gl_frame = ttk.Frame(btn_frame)
+        gl_frame.grid(column=0, row=3, sticky='sw', **pad)
+        ttk.Label(gl_frame, text='GL').grid(sticky='w')
+        gl_cartridges = ['40x46 mm']
+        for cartridge in gl_cartridges:
+            ttk.Button(gl_frame, text=cartridge, command=partial(self.ammo_click, cartridge)).grid(sticky='w')
 
-        gl_f = ttk.Frame(btn_frame)
-        gl_f.grid(column=0, row=3, sticky='sw', **pad)
-        gl_cartridges = ttk.Label(gl_f, text='GL')
-        gl_cartridges.grid(sticky='w')
-        btn_40x46mm = ttk.Button(gl_f, text='40x46 mm', command=partial(self.ammo_click, '40x46 mm'))
-        btn_40x46mm.grid(sticky='w')
+        shotgun_frame = ttk.Frame(btn_frame)
+        shotgun_frame.grid(column=1, row=1, sticky='w', **pad)
+        ttk.Label(shotgun_frame, text='Shotgun').grid(sticky='w')
+        shotgun_cartridges = ['12/70', '20/70', '23x75mm']
+        for cartridge in shotgun_cartridges:
+            ttk.Button(shotgun_frame, text=cartridge, command=partial(self.ammo_click, cartridge)).grid(sticky='w')
 
-        s_f = ttk.Frame(btn_frame)
-        s_f.grid(column=1, row=1, sticky='w', **pad)
-        s_cartridges = ttk.Label(s_f, text='Shotgun')
-        s_cartridges.grid(sticky='w')
-        btn_12_70 = ttk.Button(s_f, text='12/70', command=partial(self.ammo_click, '12/70'))
-        btn_12_70.grid(sticky='w')
-        btn_20_70 = ttk.Button(s_f, text='20/70', command=partial(self.ammo_click, '20/70'))
-        btn_20_70.grid(sticky='w')
-        btn_23x75mm = ttk.Button(s_f, text='23x75mm', command=partial(self.ammo_click, '23x75mm'))
-        btn_23x75mm.grid(sticky='w')
+        pistol_frame = ttk.Frame(btn_frame)
+        pistol_frame.grid(column=1, row=2, sticky='w', **pad)
+        ttk.Label(pistol_frame, text='Pistol').grid(sticky='w')
+        pistol_cartridges = ['7.62x25mm Tokarev', '9x18mm Makarov', '9x19mm Parabellum', '9x21mm Gyurza', '.45 ACP']
+        for cartridge in pistol_cartridges:
+            ttk.Button(pistol_frame, text=cartridge, command=partial(self.ammo_click, cartridge)).grid(sticky='w')
 
-        p_f = ttk.Frame(btn_frame)
-        p_f.grid(column=1, row=2, sticky='w', **pad)
-        p_cartridges = ttk.Label(p_f, text='Pistol')
-        p_cartridges.grid(sticky='w')
-        btn_7_62x25mm = ttk.Button(p_f, text='7.62x25mm Tokarev', command=partial(self.ammo_click, '7.62x25mm Tokarev'))
-        btn_7_62x25mm.grid(sticky='w')
-        btn_9x18mm = ttk.Button(p_f, text='9x18mm Makarov', command=partial(self.ammo_click, '9x18mm Makarov'))
-        btn_9x18mm.grid(sticky='w')
-        btn_9x19mm = ttk.Button(p_f, text='9x19mm Parabellum', command=partial(self.ammo_click, '9x19mm Parabellum'))
-        btn_9x19mm.grid(sticky='w')
-        btn_9x21mm = ttk.Button(p_f, text='9x21mm Gyurza', command=partial(self.ammo_click, '9x21mm Gyurza'))
-        btn_9x21mm.grid(sticky='w')
-        btn_45_acp = ttk.Button(p_f, text='.45 ACP', command=partial(self.ammo_click, '.45 ACP'))
-        btn_45_acp.grid(sticky='w')
-
-        pdw_f = ttk.Frame(btn_frame)
-        pdw_f.grid(column=1, row=3, sticky='w', **pad)
-        pdw_cartridges = ttk.Label(pdw_f, text='PDW')
-        pdw_cartridges.grid(sticky='w')
-        button_46x30mm_hk = ttk.Button(pdw_f, text='4.6x30mm HK', command=partial(self.ammo_click, '4.6x30mm HK'))
-        button_46x30mm_hk.grid(sticky='w')
-        button_57x28mm_fn = ttk.Button(pdw_f, text='5.7x28mm FN', command=partial(self.ammo_click, '5.7x28mm FN'))
-        button_57x28mm_fn.grid(sticky='w')
+        pdw_frame = ttk.Frame(btn_frame)
+        pdw_frame.grid(column=1, row=3, sticky='w', **pad)
+        ttk.Label(pdw_frame, text='PDW').grid(sticky='w')
+        pdw_cartridges = ['4.6x30mm HK', '5.7x28mm FN']
+        for cartridge in pdw_cartridges:
+            ttk.Button(pdw_frame, text=cartridge, command=partial(self.ammo_click, cartridge)).grid(sticky='w')
 
     def db_frame(self, pad):
         db_frame = ttk.Frame(self)
