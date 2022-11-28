@@ -13,6 +13,6 @@ An EFT database for linked ammo and weapon searches.
 
 ## Installation
 
-Download the most recent pre-built ZIP from GitHub Releases.
+Download the latest pre-built ZIP from [GitHub Releases](https://github.com/PTMC7216/eft-munitions-db/releases).
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/PTMC7216/eft-munitions-db)
