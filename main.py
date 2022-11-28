@@ -135,7 +135,7 @@ class GUI(tk.Tk):
 
     def db_frame(self, pad):
         db_frame = ttk.Frame(self)
-        db_frame.grid(column=1, row=0, rowspan=99, sticky='n', **pad)
+        db_frame.grid(column=1, row=0, rowspan=2, sticky='n', **pad)
 
         scroll_height = {'ipady': 88}
         cartridge_width = {'width': 120, 'minwidth': 120, 'stretch': 0}
@@ -153,6 +153,7 @@ class GUI(tk.Tk):
         self.ammo_tree = TvSort(ammo_tree_f,
                                 columns=("Cartridge", "Name", "Dmg", "Pen", "Frag"),
                                 yscrollcommand=ammo_tree_scroll.set)
+
         self.ammo_tree.column("#0", width=0, stretch=0)
         self.ammo_tree.column("Cartridge", **cartridge_width)
         self.ammo_tree.column("Name", **a_name_width)
@@ -174,6 +175,7 @@ class GUI(tk.Tk):
         self.weapon_tree = TvSort(weapon_tree_f,
                                   columns=("Cartridge", "Name", "Type", "Recoil", "Ergo", "RPM"),
                                   yscrollcommand=weapon_tree_scroll.set)
+
         self.weapon_tree.column("#0", width=0, stretch=0)
         self.weapon_tree.column("Cartridge", **cartridge_width)
         self.weapon_tree.column("Name", **w_name_width)
@@ -231,11 +233,14 @@ class GUI(tk.Tk):
                            "JOIN Weapons AS w "
                            "ON w.caliber = a.caliber "
                            f"WHERE w.name LIKE '%{query}%'")
+
             a_data = self.c.fetchall()
             for col in a_data:
                 self.ammo_tree.insert(parent='', index='end', text='',
                                       values=(col[0], col[1], col[2], col[3], col[4]))
+
             self.c.execute(f"SELECT * FROM Weapons WHERE name LIKE '%{query}%'")
+
             w_data = self.c.fetchall()
             for col in w_data:
                 self.weapon_tree.insert(parent='', index='end', text='',
@@ -248,10 +253,12 @@ class GUI(tk.Tk):
         self.weapon_tree.delete(*self.weapon_tree.get_children())
 
         self.c.execute(f"SELECT * FROM Ammo WHERE caliber = '{query}'")
+
         a_data = self.c.fetchall()
         for col in a_data:
             self.ammo_tree.insert(parent='', index='end', text='',
                                   values=(col[1], col[2], col[3], col[4], col[5]))
+
         self.c.execute(f"SELECT * FROM Weapons WHERE caliber = '{query}'")
 
         w_data = self.c.fetchall()
