@@ -105,13 +105,6 @@ class GUI(tk.Tk):
         db_frame.grid(column=1, row=0, rowspan=2, sticky='n', **pad)
 
         scroll_height = {'ipady': 88}
-        cartridge_width = {'width': 120, 'minwidth': 120, 'stretch': 0}
-        int_cols_width = {'width': 50, 'minwidth': 50, 'stretch': 0}
-        a_name_width = {'width': 210, 'minwidth': 210, 'stretch': 0}
-        w_name_width = {'width': 120, 'minwidth': 120, 'stretch': 0}
-        w_type_width = {'width': a_name_width['width'] - w_name_width['width'],
-                        'minwidth': a_name_width['minwidth'] - w_name_width['minwidth'],
-                        'stretch': 0}
 
         ammo_tree_f = ttk.LabelFrame(db_frame, text="Ammunition")
         ammo_tree_f.grid(column=0, row=0)
@@ -122,11 +115,11 @@ class GUI(tk.Tk):
                                 yscrollcommand=ammo_tree_scroll.set)
 
         self.ammo_tree.column("#0", width=0, stretch=0)
-        self.ammo_tree.column("Cartridge", **cartridge_width)
-        self.ammo_tree.column("Name", **a_name_width)
-        self.ammo_tree.column("Dmg", **int_cols_width)
-        self.ammo_tree.column("Pen", **int_cols_width)
-        self.ammo_tree.column("Frag", **int_cols_width)
+        self.ammo_tree.column("Cartridge", **self.get_width_kwargs(120))
+        self.ammo_tree.column("Name", **self.get_width_kwargs(210))
+        self.ammo_tree.column("Dmg", **self.get_width_kwargs(50))
+        self.ammo_tree.column("Pen", **self.get_width_kwargs(50))
+        self.ammo_tree.column("Frag", **self.get_width_kwargs(50))
         self.ammo_tree.heading("Cartridge", text="Cartridge", sort_by="name")
         self.ammo_tree.heading("Name", text="Name", sort_by="name")
         self.ammo_tree.heading("Dmg", text="Dmg", sort_by="x")
@@ -144,12 +137,12 @@ class GUI(tk.Tk):
                                   yscrollcommand=weapon_tree_scroll.set)
 
         self.weapon_tree.column("#0", width=0, stretch=0)
-        self.weapon_tree.column("Cartridge", **cartridge_width)
-        self.weapon_tree.column("Name", **w_name_width)
-        self.weapon_tree.column("Type", **w_type_width)
-        self.weapon_tree.column("Recoil", **int_cols_width)
-        self.weapon_tree.column("Ergo", **int_cols_width)
-        self.weapon_tree.column("RPM", **int_cols_width)
+        self.weapon_tree.column("Cartridge", **self.get_width_kwargs(120))
+        self.weapon_tree.column("Name", **self.get_width_kwargs(120))
+        self.weapon_tree.column("Type", **self.get_width_kwargs_difference(210, 120))
+        self.weapon_tree.column("Recoil", **self.get_width_kwargs(50))
+        self.weapon_tree.column("Ergo", **self.get_width_kwargs(50))
+        self.weapon_tree.column("RPM", **self.get_width_kwargs(50))
         self.weapon_tree.heading("Cartridge", text="Cartridge", sort_by="name")
         self.weapon_tree.heading("Name", text="Name", sort_by="name")
         self.weapon_tree.heading("Type", text="Type", sort_by="name")
@@ -221,11 +214,21 @@ class GUI(tk.Tk):
 
         self.c.execute(f"SELECT * FROM Ammo WHERE caliber = '{query}'")
 
+    @staticmethod
+    def get_width_kwargs(width):
+        return {'width': width,
+                'minwidth': width,
+                'stretch': 0}
         a_data = self.c.fetchall()
         for col in a_data:
             self.ammo_tree.insert(parent='', index='end', text='',
                                   values=(col[1], col[2], col[3], col[4], col[5]))
 
+    @staticmethod
+    def get_width_kwargs_difference(width1, width2):
+        return {'width': width1 - width2,
+                'minwidth': width1 - width2,
+                'stretch': 0}
         self.c.execute(f"SELECT * FROM Weapons WHERE caliber = '{query}'")
 
         w_data = self.c.fetchall()
