@@ -22,7 +22,6 @@ class GUI(tk.Tk):
         y_coord = int((screen_height / 2) - (window_height / 2) - 40)
 
         self.radio = None
-        self.field = None
         self.results = None
         self.ammo_tree = None
         self.weapon_tree = None
@@ -49,11 +48,6 @@ class GUI(tk.Tk):
         self.radio.set(0)
         ttk.Radiobutton(search_frame, text='Ammo', variable=self.radio, value=0).grid(column=1, row=0)
         ttk.Radiobutton(search_frame, text='Weapon', variable=self.radio, value=1).grid(column=2, row=0)
-
-        self.field = ttk.Entry(search_frame)
-        self.field.grid(column=0, row=1, columnspan=2, ipadx=15, pady=10)
-        self.field.bind('<Return>', self.submit_keypress)
-
         ttk.Button(search_frame, text='Submit', command=self.submit_click).grid(column=2, row=1)
 
         self.results = ttk.Label(search_frame, text='')
@@ -114,6 +108,9 @@ class GUI(tk.Tk):
                                 columns=("Cartridge", "Name", "Dmg", "Pen", "Frag"),
                                 yscrollcommand=ammo_tree_scroll.set)
 
+        self.entry = ttk.Entry(search_frame)
+        self.entry.grid(column=0, row=1, columnspan=2, ipadx=15, pady=10)
+        self.entry.bind('<Return>', self.submit_entry)
         self.ammo_tree.column("#0", width=0, stretch=0)
         self.ammo_tree.column("Cartridge", **self.get_width_kwargs(120))
         self.ammo_tree.column("Name", **self.get_width_kwargs(210))
@@ -157,103 +154,90 @@ class GUI(tk.Tk):
         self.weapon_tree.bind('<Button-1>', self.separator_resize_blocker)
         self.weapon_tree.bind('<Motion>', self.separator_resize_blocker)
 
-    def result(self):
+    def count_results(self):
         rows = len(self.ammo_tree.get_children()) + len(self.weapon_tree.get_children())
         self.results.config(text=f"Found {rows} results")
+    def execute_and_populate(self, query, tree, col_indices):
+        self.c.execute(query)
+        for col in self.c.fetchall():
+            values = [col[i] for i in col_indices]
+            tree.insert(parent='', index='end', text='', values=values)
 
-    def submit_sql_query(self, query):
+    def query_entry(self, entry):
         self.ammo_tree.delete(*self.ammo_tree.get_children())
         self.weapon_tree.delete(*self.weapon_tree.get_children())
 
-        if self.field.get() == "" or self.field.get() == " ":
-            self.result()
+        if self.entry.get() == "" or self.entry.get() == " ":
+            self.count_results()
 
-        elif self.radio.get() == 0:
-            self.c.execute(f"SELECT * FROM Ammo WHERE name LIKE '%{query}%'")
+        elif self.radio_var.get() == 0:
+            self.execute_and_populate(
+                f"SELECT * FROM Ammo WHERE name LIKE '%{entry}%'",
+                self.ammo_tree, [1, 2, 3, 4, 5])
+            self.execute_and_populate(
+                "SELECT DISTINCT w.caliber, w.name, w.type, w.recoil, w.ergo, w.rpm "
+                "FROM Weapons AS w "
+                "JOIN Ammo AS a "
+                "ON a.caliber = w.caliber "
+                f"WHERE a.name LIKE '%{entry}%'",
+                self.weapon_tree, [0, 1, 2, 3, 4, 5])
 
-            a_data = self.c.fetchall()
-            for col in a_data:
-                self.ammo_tree.insert(parent='', index='end', text='',
-                                      values=(col[1], col[2], col[3], col[4], col[5]))
+        elif self.radio_var.get() == 1:
+            self.execute_and_populate(
+                "SELECT DISTINCT a.caliber, a.name, a.dmg, a.pen, a.frag "
+                "FROM Ammo AS a "
+                "JOIN Weapons AS w "
+                "ON w.caliber = a.caliber "
+                f"WHERE w.name LIKE '%{entry}%'",
+                self.ammo_tree, [0, 1, 2, 3, 4])
+            self.execute_and_populate(
+                f"SELECT * FROM Weapons WHERE name LIKE '%{entry}%'",
+                self.weapon_tree, [3, 1, 2, 4, 5, 6])
 
-            self.c.execute("SELECT DISTINCT w.caliber, w.name, w.type, w.recoil, w.ergo, w.rpm "
-                           "FROM Weapons AS w "
-                           "JOIN Ammo AS a "
-                           "ON a.caliber = w.caliber "
-                           f"WHERE a.name LIKE '%{query}%'")
+        self.count_results()
 
-            w_data = self.c.fetchall()
-            for col in w_data:
-                self.weapon_tree.insert(parent='', index='end', text='',
-                                        values=(col[0], col[1], col[2], col[3], col[4], col[5]))
-
-        else:
-            self.c.execute("SELECT DISTINCT a.caliber, a.name, a.dmg, a.pen, a.frag "
-                           "FROM Ammo AS a "
-                           "JOIN Weapons AS w "
-                           "ON w.caliber = a.caliber "
-                           f"WHERE w.name LIKE '%{query}%'")
-
-            a_data = self.c.fetchall()
-            for col in a_data:
-                self.ammo_tree.insert(parent='', index='end', text='',
-                                      values=(col[0], col[1], col[2], col[3], col[4]))
-
-            self.c.execute(f"SELECT * FROM Weapons WHERE name LIKE '%{query}%'")
-
-            w_data = self.c.fetchall()
-            for col in w_data:
-                self.weapon_tree.insert(parent='', index='end', text='',
-                                        values=(col[3], col[1], col[2], col[4], col[5], col[6]))
-
-        self.result()
-
-    def button_sql_query(self, query):
+    def query_cartridge(self, cartridge):
         self.ammo_tree.delete(*self.ammo_tree.get_children())
         self.weapon_tree.delete(*self.weapon_tree.get_children())
 
-        self.c.execute(f"SELECT * FROM Ammo WHERE caliber = '{query}'")
+        self.execute_and_populate(
+            f"SELECT * FROM Ammo WHERE caliber = '{cartridge}'",
+            self.ammo_tree, [1, 2, 3, 4, 5])
+        self.execute_and_populate(
+            f"SELECT * FROM Weapons WHERE caliber = '{cartridge}'",
+            self.weapon_tree, [3, 1, 2, 4, 5, 6])
+
+        self.count_results()
+
+    def submit_entry(self, *_):
+        self.query_entry(self.entry.get())
+        self.entry.delete(0, 'end')
+
+    def submit_cartridge(self, cartridge):
+        self.query_cartridge(cartridge)
+
 
     @staticmethod
     def get_width_kwargs(width):
         return {'width': width,
                 'minwidth': width,
                 'stretch': 0}
-        a_data = self.c.fetchall()
-        for col in a_data:
-            self.ammo_tree.insert(parent='', index='end', text='',
-                                  values=(col[1], col[2], col[3], col[4], col[5]))
 
     @staticmethod
     def get_width_kwargs_difference(width1, width2):
         return {'width': width1 - width2,
                 'minwidth': width1 - width2,
                 'stretch': 0}
-        self.c.execute(f"SELECT * FROM Weapons WHERE caliber = '{query}'")
 
-        w_data = self.c.fetchall()
-        for col in w_data:
-            self.weapon_tree.insert(parent='', index='end', text='',
-                                    values=(col[3], col[1], col[2], col[4], col[5], col[6]))
 
-        self.result()
 
-    def submit_click(self):
-        self.submit_sql_query(self.field.get())
-        self.field.delete(0, 'end')
 
-    # noinspection PyUnusedLocal
-    def submit_keypress(self, event):
-        self.submit_sql_query(self.field.get())
-        self.field.delete(0, 'end')
 
     def separator_resize_blocker(self, event):
         if self.ammo_tree.identify_region(event.x, event.y) == "separator" or \
                 self.weapon_tree.identify_region(event.x, event.y) == "separator":
             return "break"
 
-    def ammo_click(self, cartridge):
-        self.button_sql_query(cartridge)
 
 
 class TvSort(ttk.Treeview):
