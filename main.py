@@ -241,12 +241,12 @@ class CustomTreeview(ttk.Treeview):
         treestyle.map('Treeview.Heading',
                       background=[('active', customtkinter.ThemeManager.theme["CTkButton"]["hover_color"][1])])
 
-    def heading(self, column, sort_by=None, anchor='w', **kwargs):
+    def heading(self, column, sort_by=None, **kwargs):
         if sort_by and not hasattr(kwargs, "command"):
             func = getattr(self, f"_sort_by_{sort_by}", None)
             if func:
                 kwargs["command"] = partial(func, column, False)
-        return super().heading(column, **kwargs)
+        return super().heading(column, anchor='w', **kwargs)
 
     def _sort(self, column, reverse, data_type, callback):
         items = [(self.set(k, column), k) for k in self.get_children("")]
