@@ -5,8 +5,8 @@ from functools import partial
 import sqlite3
 
 
-customtkinter.set_appearance_mode("Dark")
-customtkinter.set_default_color_theme("dark-blue")
+customtkinter.set_appearance_mode('Dark')
+customtkinter.set_default_color_theme('dark-blue')
 
 
 class App(customtkinter.CTk):
@@ -81,21 +81,21 @@ class App(customtkinter.CTk):
 
         self.ammo_tree_frame = customtkinter.CTkFrame(self)
         self.ammo_tree_frame.grid(column=1, row=0, rowspan=2, sticky='n', pady=5)
-        self.ammo_tree_label = customtkinter.CTkLabel(self.ammo_tree_frame, text="Ammunition")
+        self.ammo_tree_label = customtkinter.CTkLabel(self.ammo_tree_frame, text='Ammunition')
         self.ammo_tree_label.grid(column=0, row=0)
-        self.ammo_tree = CustomTreeview(self.ammo_tree_frame, height=11, columns=("Cartridge", "Name", "Dmg", "Pen", "Frag"))
+        self.ammo_tree = CustomTreeview(self.ammo_tree_frame, height=11, columns=('Cartridge', 'Name', 'Dmg', 'Pen', 'Frag'))
         self.ammo_tree.grid(column=0, row=1)
-        self.ammo_tree.column("#0", width=0, stretch=0)
-        self.ammo_tree.column("Cartridge", **self.get_width_kwargs(120))
-        self.ammo_tree.column("Name", **self.get_width_kwargs(210))
-        self.ammo_tree.column("Dmg", **self.get_width_kwargs(50))
-        self.ammo_tree.column("Pen", **self.get_width_kwargs(50))
-        self.ammo_tree.column("Frag", **self.get_width_kwargs(50))
-        self.ammo_tree.heading("Cartridge", text="Cartridge", sort_by="name")
-        self.ammo_tree.heading("Name", text="Name", sort_by="name")
-        self.ammo_tree.heading("Dmg", text="Dmg", sort_by="x")
-        self.ammo_tree.heading("Pen", text="Pen", sort_by="number")
-        self.ammo_tree.heading("Frag", text="Frag", sort_by="percent")
+        self.ammo_tree.column('#0', width=0, stretch=0)
+        self.ammo_tree.column('Cartridge', **self.get_width_kwargs(120))
+        self.ammo_tree.column('Name', **self.get_width_kwargs(210))
+        self.ammo_tree.column('Dmg', **self.get_width_kwargs(50))
+        self.ammo_tree.column('Pen', **self.get_width_kwargs(50))
+        self.ammo_tree.column('Frag', **self.get_width_kwargs(50))
+        self.ammo_tree.heading('Cartridge', text='Cartridge', sort_by='name')
+        self.ammo_tree.heading('Name', text='Name', sort_by='name')
+        self.ammo_tree.heading('Dmg', text='Dmg', sort_by='x')
+        self.ammo_tree.heading('Pen', text='Pen', sort_by='number')
+        self.ammo_tree.heading('Frag', text='Frag', sort_by='percent')
         self.ammo_tree_scroll = customtkinter.CTkScrollbar(self.ammo_tree_frame, command=self.ammo_tree.yview)
         self.ammo_tree_scroll.grid(column=1, row=1, ipady=24)
         self.ammo_tree.configure(yscrollcommand=self.ammo_tree_scroll.set)
@@ -104,23 +104,23 @@ class App(customtkinter.CTk):
 
         self.weapon_tree_frame = customtkinter.CTkFrame(self)
         self.weapon_tree_frame.grid(column=1, row=1, sticky='s')
-        self.weapon_tree_label = customtkinter.CTkLabel(self.weapon_tree_frame, text="Weaponry")
+        self.weapon_tree_label = customtkinter.CTkLabel(self.weapon_tree_frame, text='Weaponry')
         self.weapon_tree_label.grid(column=0, row=0)
-        self.weapon_tree = CustomTreeview(self.weapon_tree_frame, height=11, columns=("Cartridge", "Name", "Type", "Recoil", "Ergo", "RPM"))
+        self.weapon_tree = CustomTreeview(self.weapon_tree_frame, height=11, columns=('Cartridge', 'Name', 'Type', 'Recoil', 'Ergo', 'RPM'))
         self.weapon_tree.grid(column=0, row=1)
-        self.weapon_tree.column("#0", width=0, stretch=0)
-        self.weapon_tree.column("Cartridge", **self.get_width_kwargs(120))
-        self.weapon_tree.column("Name", **self.get_width_kwargs(120))
-        self.weapon_tree.column("Type", **self.get_width_kwargs_difference(210, 120))
-        self.weapon_tree.column("Recoil", **self.get_width_kwargs(50))
-        self.weapon_tree.column("Ergo", **self.get_width_kwargs(50))
-        self.weapon_tree.column("RPM", **self.get_width_kwargs(50))
-        self.weapon_tree.heading("Cartridge", text="Cartridge", sort_by="name")
-        self.weapon_tree.heading("Name", text="Name", sort_by="name")
-        self.weapon_tree.heading("Type", text="Type", sort_by="name")
-        self.weapon_tree.heading("Recoil", text="Recoil", sort_by="number")
-        self.weapon_tree.heading("Ergo", text="Ergo", sort_by="number")
-        self.weapon_tree.heading("RPM", text="RPM", sort_by="number")
+        self.weapon_tree.column('#0', width=0, stretch=0)
+        self.weapon_tree.column('Cartridge', **self.get_width_kwargs(120))
+        self.weapon_tree.column('Name', **self.get_width_kwargs(120))
+        self.weapon_tree.column('Type', **self.get_width_kwargs_difference(210, 120))
+        self.weapon_tree.column('Recoil', **self.get_width_kwargs(50))
+        self.weapon_tree.column('Ergo', **self.get_width_kwargs(50))
+        self.weapon_tree.column('RPM', **self.get_width_kwargs(50))
+        self.weapon_tree.heading('Cartridge', text='Cartridge', sort_by='name')
+        self.weapon_tree.heading('Name', text='Name', sort_by='name')
+        self.weapon_tree.heading('Type', text='Type', sort_by='name')
+        self.weapon_tree.heading('Recoil', text='Recoil', sort_by='number')
+        self.weapon_tree.heading('Ergo', text='Ergo', sort_by='number')
+        self.weapon_tree.heading('RPM', text='RPM', sort_by='number')
         self.weapon_tree_scroll = customtkinter.CTkScrollbar(self.weapon_tree_frame, command=self.weapon_tree.yview)
         self.weapon_tree_scroll.grid(column=1, row=1, ipady=24)
         self.weapon_tree.configure(yscrollcommand=self.weapon_tree_scroll.set)
@@ -148,7 +148,7 @@ class App(customtkinter.CTk):
         self.ammo_tree.delete(*self.ammo_tree.get_children())
         self.weapon_tree.delete(*self.weapon_tree.get_children())
 
-        if self.entry.get() == "" or self.entry.get() == " ":
+        if self.entry.get() == '' or self.entry.get() == ' ':
             self.count_results()
 
         elif self.radio_var.get() == 0:
@@ -198,9 +198,9 @@ class App(customtkinter.CTk):
         self.query_cartridge(cartridge)
 
     def separator_lock(self, event):
-        if self.ammo_tree.identify_region(event.x, event.y) == "separator" or \
-                self.weapon_tree.identify_region(event.x, event.y) == "separator":
-            return "break"
+        if self.ammo_tree.identify_region(event.x, event.y) == 'separator' or \
+                self.weapon_tree.identify_region(event.x, event.y) == 'separator':
+            return 'break'
 
     @staticmethod
     def get_width_kwargs(width):
@@ -222,24 +222,32 @@ class CustomTreeview(ttk.Treeview):
         treestyle = ttk.Style()
         treestyle.theme_use('default')
 
-        treestyle.configure("Treeview",
-                            fieldbackground=customtkinter.ThemeManager.theme["CTkFrame"]["fg_color"][1],
-                            background=customtkinter.ThemeManager.theme["CTkFrame"]["fg_color"][1],
-                            foreground=customtkinter.ThemeManager.theme["CTkLabel"]["text_color"][1],
-                            borderwidth=0)
+        treestyle.configure(
+            'Treeview',
+            fieldbackground=customtkinter.ThemeManager.theme['CTkFrame']['fg_color'][1],
+            background=customtkinter.ThemeManager.theme['CTkFrame']['fg_color'][1],
+            foreground=customtkinter.ThemeManager.theme['CTkLabel']['text_color'][1],
+            borderwidth=0
+        )
 
-        treestyle.map('Treeview',
-                      background=[('selected', customtkinter.ThemeManager.theme["CTkButton"]["fg_color"][1])],
-                      foreground=[('selected', customtkinter.ThemeManager.theme["CTkButton"]["text_color"][1])])
+        treestyle.map(
+            'Treeview',
+            background=[('selected', customtkinter.ThemeManager.theme['CTkButton']['fg_color'][1])],
+            foreground=[('selected', customtkinter.ThemeManager.theme['CTkButton']['text_color'][1])]
+        )
 
-        treestyle.configure('Treeview.Heading',
-                            background=customtkinter.ThemeManager.theme["CTkButton"]["fg_color"][1],
-                            foreground=customtkinter.ThemeManager.theme["CTkButton"]["text_color"][1],
-                            relief='flat',
-                            borderwidth=6)
+        treestyle.configure(
+            'Treeview.Heading',
+            background=customtkinter.ThemeManager.theme['CTkButton']['fg_color'][1],
+            foreground=customtkinter.ThemeManager.theme['CTkButton']['text_color'][1],
+            relief='flat',
+            borderwidth=6
+        )
 
-        treestyle.map('Treeview.Heading',
-                      background=[('active', customtkinter.ThemeManager.theme["CTkButton"]["hover_color"][1])])
+        treestyle.map(
+            'Treeview.Heading',
+            background=[('active', customtkinter.ThemeManager.theme["CTkButton"]["hover_color"][1])]
+        )
 
     def heading(self, column, sort_by=None, **kwargs):
         if sort_by and not hasattr(kwargs, "command"):
