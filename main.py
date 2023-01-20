@@ -2,6 +2,7 @@ import customtkinter
 import tkinter as tk
 from tkinter import ttk
 from functools import partial
+from cartridges import Cartridges
 import sqlite3
 
 
@@ -66,18 +67,22 @@ class App(customtkinter.CTk):
         self.pdw_frame.grid(column=1, row=3, padx=(0, 5), pady=4)
         self.pdw_label = customtkinter.CTkLabel(self.pdw_frame, text='PDW')
         self.pdw_label.grid()
+
+        self.cartridges = Cartridges()
         self.cartridge_frame_map = {
-            self.rifle_frame: ['9x39mm', '.366 TKM', '5.45x39mm', '5.56x45mm NATO', '.300 Blackout', '7.62x39mm',
-                               '7.62x51mm NATO', '7.62x54mmR', '.338 Lapua Magnum', '12.7x55mm STs-130'],
-            self.gl_frame: ['40x46 mm'],
-            self.shotgun_frame: ['12/70', '20/70', '23x75mm'],
-            self.pistol_frame: ['7.62x25mm Tokarev', '9x18mm Makarov', '9x19mm Parabellum', '9x21mm Gyurza', '.45 ACP'],
-            self.pdw_frame: ['4.6x30mm HK', '5.7x28mm FN']
+            self.rifle_frame:   self.cartridges.map['rifle'].values(),
+            self.gl_frame:      self.cartridges.map['gl'].values(),
+            self.shotgun_frame: self.cartridges.map['shotgun'].values(),
+            self.pistol_frame:  self.cartridges.map['pistol'].values(),
+            self.pdw_frame:     self.cartridges.map['pdw'].values()
         }
+        seen = set()
         for frame, cartridges in self.cartridge_frame_map.items():
             for cartridge in cartridges:
-                customtkinter.CTkButton(frame, text=cartridge, command=partial(self.submit_cartridge, cartridge),
-                                        width=130, height=25).grid(padx=4, pady=(0, 4))
+                if cartridge not in seen:
+                    seen.add(cartridge)
+                    customtkinter.CTkButton(frame, text=cartridge, command=partial(self.submit_cartridge, cartridge),
+                                            width=120, height=25).grid(padx=4, pady=(0, 4))
 
         self.ammo_tree_frame = customtkinter.CTkFrame(self)
         self.ammo_tree_frame.grid(column=1, row=0, rowspan=2, sticky='n', pady=5)
