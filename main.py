@@ -20,7 +20,7 @@ class App(customtkinter.CTk):
         self.title('EFT Munitions')
         self.iconbitmap('resources/ammo.ico')
         self.resizable(False, False)
-        win_w, win_h = 800, 567
+        win_w, win_h = 782, 592
 
         self.search_frame = customtkinter.CTkFrame(self)
         self.search_frame.grid(column=0, row=0, padx=5, pady=5, sticky='n')
@@ -30,17 +30,17 @@ class App(customtkinter.CTk):
         self.search_subframe.grid(column=0, row=1, padx=4)
         self.radio_var = tk.IntVar()
         self.radio_var.set(0)
-        radio_size = {'radiobutton_width': 20, 'radiobutton_height': 20, 'border_width_unchecked': 3, 'border_width_checked': 6}
-        self.radio_button_0 = customtkinter.CTkRadioButton(self.search_subframe, text='Ammo', variable=self.radio_var, value=0, **radio_size)
+        self.radio_size = {'radiobutton_width': 20, 'radiobutton_height': 20, 'border_width_unchecked': 3, 'border_width_checked': 6}
+        self.radio_button_0 = customtkinter.CTkRadioButton(self.search_subframe, text='Ammo', variable=self.radio_var, value=0, **self.radio_size)
         self.radio_button_0.grid(column=0, row=0, pady=8)
-        self.radio_button_1 = customtkinter.CTkRadioButton(self.search_subframe, text='Weapon', variable=self.radio_var, value=1, **radio_size)
+        self.radio_button_1 = customtkinter.CTkRadioButton(self.search_subframe, text='Weapon', variable=self.radio_var, value=1, **self.radio_size)
         self.radio_button_1.grid(column=1, row=0, pady=8)
         self.entry = customtkinter.CTkEntry(self.search_subframe)
-        self.entry.grid(column=0, row=1, padx=8, ipadx=9, pady=(0, 8))
+        self.entry.grid(column=0, row=1, padx=6, ipadx=5, pady=(0, 8))
         self.entry.bind('<Return>', self.submit_entry)
-        self.submit_button = customtkinter.CTkButton(self.search_subframe, text='Submit', command=self.submit_entry, width=100)
+        self.submit_button = customtkinter.CTkButton(self.search_subframe, text='Submit', command=self.submit_entry, width=90)
         self.submit_button.grid(column=1, row=1, padx=(0, 8), pady=(0, 8))
-        self.results_label = customtkinter.CTkLabel(self.search_frame, text='')
+        self.results_label = customtkinter.CTkLabel(self.search_frame, text='.  .  .')
         self.results_label.grid(column=0, row=3, columnspan=3)
 
         self.cartridge_frame = customtkinter.CTkFrame(self)
@@ -48,23 +48,23 @@ class App(customtkinter.CTk):
         self.cartridge_label = customtkinter.CTkLabel(self.cartridge_frame, text='Search by cartridge:')
         self.cartridge_label.grid(column=0, columnspan=2, row=0)
         self.rifle_frame = customtkinter.CTkFrame(self.cartridge_frame)
-        self.rifle_frame.grid(column=0, row=1, rowspan=3, sticky='n', padx=4, pady=(0, 4))
+        self.rifle_frame.grid(column=0, row=1, rowspan=3, sticky='n', padx=5, pady=(0, 5))
         self.rifle_label = customtkinter.CTkLabel(self.rifle_frame, text='Rifle')
         self.rifle_label.grid()
         self.gl_frame = customtkinter.CTkFrame(self.cartridge_frame)
-        self.gl_frame.grid(column=0, row=3, sticky='s', padx=4, pady=4)
+        self.gl_frame.grid(column=0, row=3, sticky='s', padx=5, pady=(0, 5))
         self.gl_label = customtkinter.CTkLabel(self.gl_frame, text='GL')
         self.gl_label.grid()
         self.shotgun_frame = customtkinter.CTkFrame(self.cartridge_frame)
-        self.shotgun_frame.grid(column=1, row=1, padx=(0, 5), pady=(0, 4))
+        self.shotgun_frame.grid(column=1, row=1, padx=(0, 5), pady=(0, 5))
         self.shotgun_label = customtkinter.CTkLabel(self.shotgun_frame, text='Shotgun')
         self.shotgun_label.grid()
         self.pistol_frame = customtkinter.CTkFrame(self.cartridge_frame)
-        self.pistol_frame.grid(column=1, row=2, padx=(0, 5), pady=4)
+        self.pistol_frame.grid(column=1, row=2, padx=(0, 5), pady=(0, 5))
         self.pistol_label = customtkinter.CTkLabel(self.pistol_frame, text='Pistol')
         self.pistol_label.grid()
         self.pdw_frame = customtkinter.CTkFrame(self.cartridge_frame)
-        self.pdw_frame.grid(column=1, row=3, padx=(0, 5), pady=4)
+        self.pdw_frame.grid(column=1, row=3, padx=(0, 5), pady=(0, 5))
         self.pdw_label = customtkinter.CTkLabel(self.pdw_frame, text='PDW')
         self.pdw_label.grid()
 
@@ -74,8 +74,7 @@ class App(customtkinter.CTk):
             self.gl_frame:      self.cartridges.map['gl'].values(),
             self.shotgun_frame: self.cartridges.map['shotgun'].values(),
             self.pistol_frame:  self.cartridges.map['pistol'].values(),
-            self.pdw_frame:     self.cartridges.map['pdw'].values()
-        }
+            self.pdw_frame:     self.cartridges.map['pdw'].values()}
         seen = set()
         for frame, cartridges in self.cartridge_frame_map.items():
             for cartridge in cartridges:
