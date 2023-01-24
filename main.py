@@ -87,19 +87,20 @@ class App(customtkinter.CTk):
         self.ammo_tree_frame.grid(column=1, row=0, rowspan=2, sticky='n', pady=5)
         self.ammo_tree_label = customtkinter.CTkLabel(self.ammo_tree_frame, text='Ammunition')
         self.ammo_tree_label.grid(column=0, row=0)
-        self.ammo_tree = CustomTreeview(self.ammo_tree_frame, height=11, columns=('Cartridge', 'Name', 'Dmg', 'Pen', 'Frag'))
+        self.ammo_tree_columns = {
+            'Cartridge': (90, 'name'),
+            'Name': (140, 'name'),
+            'Dmg': (50, 'number'),
+            'Pen': (50, 'number'),
+            'Acc': (50, 'number'),
+            'Rec': (50, 'number'),
+            'Frag': (50, 'number')}
+        self.ammo_tree = CustomTreeview(self.ammo_tree_frame, height=11, columns=tuple(self.ammo_tree_columns))
         self.ammo_tree.grid(column=0, row=1)
         self.ammo_tree.column('#0', width=0, stretch=0)
-        self.ammo_tree.column('Cartridge', **self.get_width_kwargs(120))
-        self.ammo_tree.column('Name', **self.get_width_kwargs(210))
-        self.ammo_tree.column('Dmg', **self.get_width_kwargs(50))
-        self.ammo_tree.column('Pen', **self.get_width_kwargs(50))
-        self.ammo_tree.column('Frag', **self.get_width_kwargs(50))
-        self.ammo_tree.heading('Cartridge', text='Cartridge', sort_by='name')
-        self.ammo_tree.heading('Name', text='Name', sort_by='name')
-        self.ammo_tree.heading('Dmg', text='Dmg', sort_by='x')
-        self.ammo_tree.heading('Pen', text='Pen', sort_by='number')
-        self.ammo_tree.heading('Frag', text='Frag', sort_by='percent')
+        for column, (width, sort_by) in self.ammo_tree_columns.items():
+            self.ammo_tree.column(column, **self.get_width_kwargs(width))
+            self.ammo_tree.heading(column, text=column, sort_by=sort_by)
         self.ammo_tree_scroll = customtkinter.CTkScrollbar(self.ammo_tree_frame, command=self.ammo_tree.yview)
         self.ammo_tree_scroll.grid(column=1, row=1, ipady=24)
         self.ammo_tree.configure(yscrollcommand=self.ammo_tree_scroll.set)
@@ -110,21 +111,19 @@ class App(customtkinter.CTk):
         self.weapon_tree_frame.grid(column=1, row=1, sticky='s')
         self.weapon_tree_label = customtkinter.CTkLabel(self.weapon_tree_frame, text='Weaponry')
         self.weapon_tree_label.grid(column=0, row=0)
-        self.weapon_tree = CustomTreeview(self.weapon_tree_frame, height=11, columns=('Cartridge', 'Name', 'Type', 'Recoil', 'Ergo', 'RPM'))
+        self.weapon_tree_columns = {
+            'Cartridge': (90, 'name'),
+            'Name': (140, 'name'),
+            'Type': (100, 'name'),
+            'Rec': (50, 'number'),
+            'Ergo': (50, 'number'),
+            'RPM': (50, 'number')}
+        self.weapon_tree = CustomTreeview(self.weapon_tree_frame, height=11, columns=tuple(self.weapon_tree_columns))
         self.weapon_tree.grid(column=0, row=1)
         self.weapon_tree.column('#0', width=0, stretch=0)
-        self.weapon_tree.column('Cartridge', **self.get_width_kwargs(120))
-        self.weapon_tree.column('Name', **self.get_width_kwargs(120))
-        self.weapon_tree.column('Type', **self.get_width_kwargs_difference(210, 120))
-        self.weapon_tree.column('Recoil', **self.get_width_kwargs(50))
-        self.weapon_tree.column('Ergo', **self.get_width_kwargs(50))
-        self.weapon_tree.column('RPM', **self.get_width_kwargs(50))
-        self.weapon_tree.heading('Cartridge', text='Cartridge', sort_by='name')
-        self.weapon_tree.heading('Name', text='Name', sort_by='name')
-        self.weapon_tree.heading('Type', text='Type', sort_by='name')
-        self.weapon_tree.heading('Recoil', text='Recoil', sort_by='number')
-        self.weapon_tree.heading('Ergo', text='Ergo', sort_by='number')
-        self.weapon_tree.heading('RPM', text='RPM', sort_by='number')
+        for column, (width, sort_by) in self.weapon_tree_columns.items():
+            self.weapon_tree.column(column, **self.get_width_kwargs(width))
+            self.weapon_tree.heading(column, text=column, sort_by=sort_by)
         self.weapon_tree_scroll = customtkinter.CTkScrollbar(self.weapon_tree_frame, command=self.weapon_tree.yview)
         self.weapon_tree_scroll.grid(column=1, row=1, ipady=24)
         self.weapon_tree.configure(yscrollcommand=self.weapon_tree_scroll.set)
@@ -210,12 +209,6 @@ class App(customtkinter.CTk):
     def get_width_kwargs(width):
         return {'width': width,
                 'minwidth': width,
-                'stretch': 0}
-
-    @staticmethod
-    def get_width_kwargs_difference(width1, width2):
-        return {'width': width1 - width2,
-                'minwidth': width1 - width2,
                 'stretch': 0}
 
 
