@@ -218,7 +218,6 @@ class CustomTreeview(ttk.Treeview):
 
         treestyle = ttk.Style()
         treestyle.theme_use('default')
-
         treestyle.configure(
             'Treeview',
             fieldbackground=customtkinter.ThemeManager.theme['CTkFrame']['fg_color'][1],
@@ -226,13 +225,11 @@ class CustomTreeview(ttk.Treeview):
             foreground=customtkinter.ThemeManager.theme['CTkLabel']['text_color'][1],
             borderwidth=0
         )
-
         treestyle.map(
             'Treeview',
             background=[('selected', customtkinter.ThemeManager.theme['CTkButton']['fg_color'][1])],
             foreground=[('selected', customtkinter.ThemeManager.theme['CTkButton']['text_color'][1])]
         )
-
         treestyle.configure(
             'Treeview.Heading',
             background=customtkinter.ThemeManager.theme['CTkButton']['fg_color'][1],
@@ -240,45 +237,27 @@ class CustomTreeview(ttk.Treeview):
             relief='flat',
             borderwidth=6
         )
-
         treestyle.map(
             'Treeview.Heading',
             background=[('active', customtkinter.ThemeManager.theme["CTkButton"]["hover_color"][1])]
         )
 
     def heading(self, column, sort_by=None, **kwargs):
-        if sort_by and not hasattr(kwargs, "command"):
-            func = getattr(self, f"_sort_by_{sort_by}", None)
-            if func:
-                kwargs["command"] = partial(func, column, False)
+        if sort_by and not hasattr(kwargs, 'command'):
+            kwargs['command'] = partial(self._sort, column, sort_by)
         return super().heading(column, anchor='w', **kwargs)
 
-    def _sort(self, column, reverse, data_type, callback):
-        items = [(self.set(k, column), k) for k in self.get_children("")]
-        items.sort(key=lambda t: data_type(t[0]), reverse=reverse)
+    def _sort(self, column, sort_by, reverse=False):
+        data = {
+            'name': str,
+            'number': lambda x: int(x.replace('%', '')) if str else int,
+        }.get(sort_by, None)
+
+        items = [(self.set(k, column), k) for k in self.get_children('')]
+        items.sort(key=lambda t: data(t[0]), reverse=reverse)
         for index, (_, k) in enumerate(items):
-            self.move(k, "", index)
-        self.heading(column, command=partial(callback, column, not reverse))
-
-    def _sort_by_name(self, column, reverse):
-        self._sort(column, reverse, str, self._sort_by_name)
-
-    def _sort_by_number(self, column, reverse):
-        self._sort(column, reverse, int, self._sort_by_number)
-
-    def _sort_by_x(self, column, reverse):
-        def _x_to_number(string):
-            split = string.split("x")
-            if len(split) > 1:
-                return int(split[0]) * int(split[1])
-            else:
-                return int(split[0])
-        self._sort(column, reverse, _x_to_number, self._sort_by_x)
-
-    def _sort_by_percent(self, column, reverse):
-        def _percent_to_number(string):
-            return int(string.replace("%", ""))
-        self._sort(column, reverse, _percent_to_number, self._sort_by_percent)
+            self.move(k, '', index)
+        self.heading(column, command=partial(self._sort, column, sort_by, not reverse))
 
 
 if __name__ == '__main__':
