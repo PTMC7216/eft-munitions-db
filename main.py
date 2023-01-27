@@ -157,9 +157,9 @@ class App(customtkinter.CTk):
         elif self.radio_var.get() == 0:
             self.execute_and_populate(
                 f"SELECT * FROM Ammo WHERE name LIKE '%{entry}%'",
-                self.ammo_tree, [1, 2, 3, 4, 5])
+                self.ammo_tree, [2, 3, 4, 5, 6, 7, 8])
             self.execute_and_populate(
-                "SELECT DISTINCT w.caliber, w.name, w.type, w.recoil, w.ergo, w.rpm "
+                "SELECT DISTINCT w.caliber, w.name, w.type, w.rec, w.ergo, w.rpm "
                 "FROM Weapons AS w "
                 "JOIN Ammo AS a "
                 "ON a.caliber = w.caliber "
@@ -168,15 +168,15 @@ class App(customtkinter.CTk):
 
         elif self.radio_var.get() == 1:
             self.execute_and_populate(
-                "SELECT DISTINCT a.caliber, a.name, a.dmg, a.pen, a.frag "
+                "SELECT DISTINCT a.caliber, a.name, a.dmg, a.pen, a.acc, a.rec, a.frag "
                 "FROM Ammo AS a "
                 "JOIN Weapons AS w "
                 "ON w.caliber = a.caliber "
                 f"WHERE w.name LIKE '%{entry}%'",
-                self.ammo_tree, [0, 1, 2, 3, 4])
+                self.ammo_tree, [0, 1, 2, 3, 4, 5, 6])
             self.execute_and_populate(
                 f"SELECT * FROM Weapons WHERE name LIKE '%{entry}%'",
-                self.weapon_tree, [3, 1, 2, 4, 5, 6])
+                self.weapon_tree, [2, 3, 4, 5, 6, 7])
 
         self.count_results()
 
@@ -186,10 +186,10 @@ class App(customtkinter.CTk):
 
         self.execute_and_populate(
             f"SELECT * FROM Ammo WHERE caliber = '{cartridge}'",
-            self.ammo_tree, [1, 2, 3, 4, 5])
+            self.ammo_tree, [2, 3, 4, 5, 6, 7, 8])
         self.execute_and_populate(
             f"SELECT * FROM Weapons WHERE caliber = '{cartridge}'",
-            self.weapon_tree, [3, 1, 2, 4, 5, 6])
+            self.weapon_tree, [2, 3, 4, 5, 6, 7])
 
         self.count_results()
 
